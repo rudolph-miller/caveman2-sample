@@ -7,7 +7,7 @@
         :caveman2-sample.config
         :caveman2-sample.view
         :caveman2-sample.db
-        :datafly
+        :integral
         :sxql)
   (:export :*web*))
 (in-package :caveman2-sample.web)

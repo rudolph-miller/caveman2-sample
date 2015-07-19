@@ -12,11 +12,8 @@
                 :compile-template*
                 :render-template*
                 :*djula-execute-package*)
-  (:import-from :datafly
-                :encode-json)
   (:export :*current-template*
-           :render
-           :render-json))
+           :render))
 (in-package :caveman2-sample.view)
 
 (djula:add-template-directory *template-directory*)
@@ -29,10 +26,6 @@
   (if (probe-file (merge-pathnames *template-directory* *current-template*))
       (apply #'djula:render-template* *current-template* nil env)
       (throw-code 404)))
-
-(defun render-json (object)
-  (setf (getf (response-headers *response*) :content-type) "application/json")
-  (encode-json object))
 
 
 ;;

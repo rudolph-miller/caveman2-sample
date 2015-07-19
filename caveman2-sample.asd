@@ -20,8 +20,10 @@
                :djula
 
                ;; for DB
-               :datafly
-               :sxql)
+               :integral
+               :sxql
+
+               :alexandria)
   :components ((:module "src"
                 :components
                 ((:file "main" :depends-on ("config" "view" "db"))
