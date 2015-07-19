@@ -1,5 +1,7 @@
 (in-package :cl-user)
 (defpackage caveman2-sample.web
+  (:import-from :alexandria
+                :length=)
   (:use :cl
         :caveman2
         :caveman2-sample.config
@@ -17,14 +19,25 @@
 ;; Application
 
 (defclass <web> (<app>) ())
+
+(defmethod lack.component:call :around ((self <web>) env)
+  (let ((path (getf env :path-info)))
+    (when (char= (char path 0) #\/)
+      (setq path (subseq path 1)))
+    (when (length= path 0)
+      (setq path "index"))
+  (let ((*current-template* (concatenate 'string path ".html")))
+    (call-next-method))))
+
 (defvar *web* (make-instance '<web>))
 (clear-routing-rules *web*)
 
 ;;
 ;; Routing rules
 
-(defroute "/" ()
-  (render #P"index.html"))
+@route GET "/"
+(defun root ()
+  (render))
 
 ;;
 ;; Error pages

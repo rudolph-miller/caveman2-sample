@@ -5,7 +5,8 @@
                 :*template-directory*)
   (:import-from :caveman2
                 :*response*
-                :response-headers)
+                :response-headers
+                :throw-code)
   (:import-from :djula
                 :add-template-directory
                 :compile-template*
@@ -13,7 +14,8 @@
                 :*djula-execute-package*)
   (:import-from :datafly
                 :encode-json)
-  (:export :render
+  (:export :*current-template*
+           :render
            :render-json))
 (in-package :caveman2-sample.view)
 
@@ -21,14 +23,12 @@
 
 (defparameter *template-registry* (make-hash-table :test 'equal))
 
-(defun render (template-path &optional env)
-  (let ((template (gethash template-path *template-registry*)))
-    (unless template
-      (setf template (djula:compile-template* (princ-to-string template-path)))
-      (setf (gethash template-path *template-registry*) template))
-    (apply #'djula:render-template*
-           template nil
-           env)))
+(defparameter *current-template* nil)
+
+(defun render (&optional env)
+  (if (probe-file (merge-pathnames *template-directory* *current-template*))
+      (apply #'djula:render-template* *current-template* nil env)
+      (throw-code 404)))
 
 (defun render-json (object)
   (setf (getf (response-headers *response*) :content-type) "application/json")
