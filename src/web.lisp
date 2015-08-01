@@ -35,9 +35,14 @@
 ;;
 ;; Routing rules
 
+(defmacro defrender (name (&rest args) &body body)
+  `(defun ,name (,@args)
+     (let ((result (progn ,@body)))
+       (apply #'render result))))
+
 @route GET "/"
-(defun root ()
-  (render))
+(defrender root ()
+  nil)
 
 ;;
 ;; Error pages

@@ -30,10 +30,4 @@
        :output (getf (config) :error-log))
      nil)
  :session
- (if (productionp)
-     nil
-     (lambda (app)
-       (lambda (env)
-         (let ((datafly:*trace-sql* t))
-           (funcall app env)))))
  *web*)
